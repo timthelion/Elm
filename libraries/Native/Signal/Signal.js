@@ -30,6 +30,14 @@ Elm.Native.Signal.make = function(elm) {
     elm.inputs.push(this);
   }
 
+  function onStart(base) {
+   var input = new Input(base);
+   setTimeout(function() {
+     elm.notify(input.id,base);
+    }, 0);
+   return input;
+  }
+
   function LiftN(update, args) {
     this.id = Utils.guid();
     this.value = update();
@@ -206,6 +214,7 @@ Elm.Native.Signal.make = function(elm) {
 
   return elm.Native.Signal.values = {
     constant : function(v) { return new Input(v); },
+    onStart : onStart,
     lift  : F2(lift ),
     lift2 : F3(lift2),
     lift3 : F4(lift3),

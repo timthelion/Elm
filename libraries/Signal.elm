@@ -13,7 +13,7 @@ signals and time (e.g.  delaying updates, getting timestamps) can be found in
 the [`Time`](/docs/Signal/Time.elm) library.
 
 # Combine
-@docs constant, lift, lift2, merge, merges, combine
+@docs constant, onStart, lift, lift2, merge, merges, combine
 
 # Past-Dependence
 @docs foldp, count, countIf
@@ -37,6 +37,10 @@ data Signal a = Signal
 {-| Create a constant signal that never changes. -}
 constant : a -> Signal a
 constant = Native.Signal.constant
+
+{-| Create a constant signal and fire it once at program start.  WARNING, not necesarilly the first signal of the program. -}
+onStart : a -> Signal a
+onStart = Native.Signal.onStart
 
 {-| Transform a signal with a given function. -}
 lift  : (a -> b) -> Signal a -> Signal b
