@@ -10,7 +10,7 @@ module Time where
 @docs fps, fpsWhen, every
 
 # Timing
-@docs timestamp, delay, since
+@docs timestamp, delay, since, atStart
 
 -}
 
@@ -93,3 +93,9 @@ will update one second later than any mouse click.
 -}
 delay : Time -> Signal a -> Signal a
 delay = Native.Time.delay
+
+{-| produce a single event at the start of the program giving the start time of the program.
+
+WARNING: Not gauranteed to be the first event triggered.-}
+atStart : Signal Time
+atStart = Native.Time.atStart

@@ -10,6 +10,12 @@ Elm.Native.Time.make = function(elm) {
   var Maybe = Elm.Maybe.make(elm);
   var Utils = Elm.Native.Utils.make(elm);
 
+  var timeAtStart = Date.now();
+  var atStart = Signal.constant(timeAtStart);
+  setTimeout(function () {
+   elm.notify(atStart.id,timeAtStart);
+  }, 0);
+
   function fpsWhen(desiredFPS, isOn) {
     var msPerFrame = 1000 / desiredFPS;
     var prev = Date.now(), curr = prev, diff = 0, wasOn = true;
@@ -52,6 +58,7 @@ Elm.Native.Time.make = function(elm) {
       return isNaN(t) ? Maybe.Nothing : Maybe.Just(t);
   }
   return elm.Native.Time.values = {
+      atStart : atStart,
       fpsWhen : F2(fpsWhen),
       fps : function(t) { return fpsWhen(t, Signal.constant(true)); },
       every : every,
