@@ -32,7 +32,7 @@ the [`Time`](/docs/Signal/Time.elm) library.
 import Native.Signal
 import List (foldr)
 
-import Basics (otherwise, not)
+import Basics (fst, snd, not)
 import Native.Error
 import Maybe as M
 
@@ -126,17 +126,7 @@ True. Elm does not allow undefined signals, so a base case must be
 provided in case the first signal is never true. -}
 keepWhen : Signal Bool -> a -> Signal a -> Signal a
 keepWhen bs def sig = 
-  let toMaybe : Bool -> a -> M.Maybe a
-      toMaybe b x = if b
-                    then M.Just x
-                    else M.Nothing
-      
-      fromJust : M.Maybe a -> a
-      fromJust m = case m of
-        M.Just x -> x
-        M.Nothing -> Native.Error.raise "Internal bug in keepWhen! Please report at https://github.com/evancz/Elm/issues?state=open"
-  in
-   fromJust <~ (keepIf M.isJust (M.Just def) (toMaybe <~ (sampleOn sig bs) ~ sig))
+  snd <~ (keepIf fst (False, def) ((,) <~ (sampleOn sig bs) ~ sig))
 
 {-| Keep events only when the first signal is false. Propagates an
 event from the second signal only when the first signal's value is
