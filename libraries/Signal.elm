@@ -110,20 +110,20 @@ countIf = Native.Signal.countIf
 
 {-| Keep only events that satisfy the given predicate. Elm does not allow
 undefined signals, so a base case must be provided in case the predicate is
-never satisfied. -}
+not satisfied initially. -}
 keepIf : (a -> Bool) -> a -> Signal a -> Signal a
 keepIf = Native.Signal.keepIf
 
 {-| Drop events that satisfy the given predicate. Elm does not allow undefined
-signals, so a base case must be provided in case the predicate is never
-satisfied. -}
+signals, so a base case must be provided in case the predicate is satisfied
+initially. -}
 dropIf : (a -> Bool) -> a -> Signal a -> Signal a
 dropIf = Native.Signal.dropIf
 
 {-| Keep events only when the first signal is true. Propagates an
 event from the second signal only when the first signal's value is
 True. Elm does not allow undefined signals, so a base case must be
-provided in case the first signal is never true. -}
+provided in case the first signal is not true initially. -}
 keepWhen : Signal Bool -> a -> Signal a -> Signal a
 keepWhen bs def sig = 
   snd <~ (keepIf fst (False, def) ((,) <~ (sampleOn sig bs) ~ sig))
@@ -131,7 +131,7 @@ keepWhen bs def sig =
 {-| Keep events only when the first signal is false. Propagates an
 event from the second signal only when the first signal's value is
 True. Elm does not allow undefined signals, so a base case must be
-provided in case the first signal is always true. 
+provided in case the first signal is true initially.
 -}
 dropWhen : Signal Bool -> a -> Signal a -> Signal a
 dropWhen bs = keepWhen (not <~ bs)
