@@ -21,7 +21,8 @@ reserveds = [ "if", "then", "else"
             , "data", "type"
             , "module", "where"
             , "import", "as", "hiding", "open"
-            , "export", "foreign" ]
+            , "export", "foreign"
+            , "deriving" ]
 
 jsReserveds :: Set.Set String
 jsReserveds = Set.fromList
@@ -35,6 +36,10 @@ jsReserveds = Set.fromList
     , "const", "enum", "export", "extends", "import", "super", "implements"
     , "interface", "let", "package", "private", "protected", "public"
     , "static", "yield"
+    -- reserved by the Elm runtime system
+    , "Elm", "ElmRuntime"
+    , "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9"
+    , "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"
     ]
 
 expecting = flip (<?>)
