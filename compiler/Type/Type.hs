@@ -356,7 +356,14 @@ toSrcType variable = do
     Just term ->
         case term of
           App1 a b -> do
-            Src.Data name ts <- toSrcType a
+            atype <- toSrcType a
+            let Src.Data name ts =
+                  case atype of
+                    Src.Data{} -> atype
+                    Src.Lambda{} -> error "Expected Data saw Lamda." 
+                    Src.Var name -> error $ "Compiler error: Expected Data saw Var " ++ name ++ " probably an infinite type."
+                    Src.EmptyRecord -> error "Expected Data saw EmptyRecord."
+                    Src.Record{} -> error "Expected data saw Record."
             b' <- toSrcType b
             return (Src.Data name (ts ++ [b']))
           Fun1 a b -> Src.Lambda <$> toSrcType a <*> toSrcType b
