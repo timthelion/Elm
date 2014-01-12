@@ -12,19 +12,19 @@ import System.Exit
 import System.FilePath
 import System.Process
 import GHC.IO.Handle
-import qualified Elm.Internal.Paths as ElmPaths
-import Paths_elm_server
+import qualified Noelm.Internal.Paths as NoelmPaths
+import Paths_noelm_server
 
-runtime = "/elm-runtime.js"
+runtime = "/noelm-runtime.js"
 
 serve :: Int -> String -> IO ()
 serve portNumber libLoc = do
-  putStrLn $ "Elm Server " ++ showVersion version ++
+  putStrLn $ "Noelm Server " ++ showVersion version ++
              ": running at <http://localhost:" ++ show portNumber ++ ">"
   putStrLn "Just refresh a page to recompile it!"
   simpleHTTP httpConf $ do
          _ <- compressedResponseFilter
-         msum [ uriRest serveElm
+         msum [ uriRest serveNoelm
               , uriRest (serveLib libLoc)
               , serveDirectory EnableBrowsing [] "."
               ]
@@ -33,15 +33,15 @@ serve portNumber libLoc = do
 pageTitle :: String -> String
 pageTitle = dropExtension . takeBaseName
 
-serveElm :: FilePath -> ServerPartT IO Response
-serveElm fp =
+serveNoelm :: FilePath -> ServerPartT IO Response
+serveNoelm fp =
   do fileExists <- liftIO $ doesFileExist file
-     guard (fileExists && takeExtension fp == ".elm")
+     guard (fileExists && takeExtension fp == ".noelm")
      onSuccess compile serve
   where
     file = tail fp
 
-    compile = liftIO $ createProcess $ (proc "elm" args) { std_out = CreatePipe }
+    compile = liftIO $ createProcess $ (proc "noelm" args) { std_out = CreatePipe }
         where args = [ "--make", "--runtime=" ++ runtime, file ]
 
     serve = serveFile (asContentType "text/html")
@@ -52,7 +52,7 @@ onSuccess action success = do
   exitCode <- liftIO $ waitForProcess handle
   case (exitCode, stdout) of
     (ExitFailure 127, _) ->
-        badRequest $ toResponse "Error: elm binary not found in your path."
+        badRequest $ toResponse "Error: noelm binary not found in your path."
     (ExitFailure _, Just out) ->
         do str <- liftIO $ hGetContents out
            badRequest $ toResponse str
@@ -71,7 +71,7 @@ main = getArgs >>= parse
 
 parse :: [String] -> IO ()
 parse ("--help":_) = putStrLn usage
-parse ("--version":_) = putStrLn ("The Elm Server " ++ showVersion version)
+parse ("--version":_) = putStrLn ("The Noelm Server " ++ showVersion version)
 parse args =
   if null remainingArgs then
       serve portNumber elmRuntime
@@ -92,23 +92,22 @@ parse args =
 
 usageMini :: String
 usageMini =
-  "Usage: elm-server [OPTIONS]\n\
-  \Try `elm-server --help' for more information."
+  "Usage: noelm-server [OPTIONS]\n\
+  \Try `noelm-server --help' for more information."
 
 usage :: String
 usage =
-  "Usage: elm-server [OPTIONS]\n\
-  \Compiles and serves .elm files from the current directory.\n\
-  \Example: elm-server\n\
+  "Usage: noelm-server [OPTIONS]\n\
+  \Compiles and serves .noelm files from the current directory.\n\
+  \Example: noelm-server\n\
   \\n\
   \Server configuration:\n\
   \  --port               set the port to listen on (default: 8000)\n\
   \\n\
   \Resource Locations:\n\
-  \  --runtime-location   set the location of the Elm runtime\n\
+  \  --runtime-location   set the location of the Noelm runtime\n\
   \\n\
   \Compiler Information:\n\
   \  --version            print the version information and exit\n\
   \  --help               display this help and exit\n\
-  \\n\
-  \Elm home page: <http://elm-lang.org>"
+  \\n\"

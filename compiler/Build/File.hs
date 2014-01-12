@@ -46,19 +46,19 @@ build1 flags moduleNum numModules interfaces filePath =
 
 alreadyCompiled :: Flag.Flags -> FilePath -> IO Bool
 alreadyCompiled flags filePath = do
-  existsi <- doesFileExist (Utils.elmi flags filePath)
-  existso <- doesFileExist (Utils.elmo flags filePath)
+  existsi <- doesFileExist (Utils.noelmi flags filePath)
+  existso <- doesFileExist (Utils.noelmo flags filePath)
   if not existsi || not existso
     then return False
     else do tsrc <- getModificationTime filePath
-            tint <- getModificationTime (Utils.elmo flags filePath)
+            tint <- getModificationTime (Utils.noelmo flags filePath)
             return (tsrc <= tint)
 
 retrieve :: Flag.Flags -> Map.Map String M.ModuleInterface -> FilePath
          -> IO (String, M.ModuleInterface)
 retrieve flags interfaces filePath = do
-  bytes <- IS.loadInterface (Utils.elmi flags filePath)
-  let binary = IS.interfaceDecode (Utils.elmi flags filePath) =<< bytes
+  bytes <- IS.loadInterface (Utils.noelmi flags filePath)
+  let binary = IS.interfaceDecode (Utils.noelmi flags filePath) =<< bytes
   case IS.validVersion filePath =<< binary of
     Right (name, interface) ->
         do when (Flag.print_types flags) (Print.interfaceTypes interfaces interface)
@@ -100,7 +100,7 @@ compile flags number interfaces filePath =
                                   , "( " ++ filePath ++ " )" ]
 
     generateCache intermediate metaModule = do
-      createDirectoryIfMissing True . dropFileName $ Utils.elmi flags filePath
-      writeFile (Utils.elmo flags filePath) (JS.generate metaModule)
-      withBinaryFile (Utils.elmi flags filePath) WriteMode $ \handle ->
+      createDirectoryIfMissing True . dropFileName $ Utils.noelmi flags filePath
+      writeFile (Utils.noelmo flags filePath) (JS.generate metaModule)
+      withBinaryFile (Utils.noelmi flags filePath) WriteMode $ \handle ->
           L.hPut handle (Binary.encode intermediate)

@@ -1,4 +1,4 @@
-{- | This module aims to make it easier to create dev tools for Elm.
+{- | This module aims to make it easier to create dev tools for Noelm.
 
      It provides the ability to:
 
@@ -7,16 +7,16 @@
        * Canonicalize variables
        * Convert expressions to JS and HTML
 
-     This module gives limeted access to the structure of an Elm Program.
+     This module gives limeted access to the structure of an Noelm Program.
      Giving full access would expose many internal details that are likely to
-     change as Elm progresses. These details have been hidden to avoid breaking
+     change as Noelm progresses. These details have been hidden to avoid breaking
      changes.
 -}
-module Language.Elm.DevTools where
+module Language.Noelm.DevTools where
 
 data Program
 
--- | Parse an Elm program into an AST.
+-- | Parse an Noelm program into an AST.
 parse :: String -> Either [Problem] Program
 
 -- | Get the type of a region of the program. Lets you look

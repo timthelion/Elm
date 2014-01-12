@@ -17,21 +17,21 @@ import qualified Data.List as List
 -- Part 1
 -- ------
 -- Add a build callout
--- We need to build elm-doc and run it because that generates the file "docs.json"
--- needs by Libraries.hs which is part of the elm library and executable
+-- We need to build noelm-doc and run it because that generates the file "docs.json"
+-- needs by Libraries.hs which is part of the noelm library and executable
 -- Unfort. there seems to be no way to tell cabal that:
---   (a) elm-doc generates docs.json, and
---   (b) elm (library) depends on docs.json
+--   (a) noelm-doc generates docs.json, and
+--   (b) noelm (library) depends on docs.json
 -- Therefore, we either use make instead (or a script), or hack around in cabal
 
 -- Part 2
 -- ------
 -- Add a post-build callout.
--- We need to build the runtime.js after we've built elm (because we use elm to generate some of the JavaScript),
+-- We need to build the runtime.js after we've built noelm (because we use noelm to generate some of the JavaScript),
 -- but before cabal does the install file copy step
 
 -- Assumptions
--- Elm.cabal expects the generated files to end up in dist/data
+-- Noelm.cabal expects the generated files to end up in dist/data
 -- git won't look in dist + cabal will clean it
 rtsDir :: LocalBuildInfo -> FilePath
 rtsDir lbi = "data"
@@ -41,7 +41,7 @@ tempDir lbi = "temp"
 
 -- The runtime is called:
 rts :: LocalBuildInfo -> FilePath
-rts lbi = rtsDir lbi </> "elm-runtime.js"
+rts lbi = rtsDir lbi </> "noelm-runtime.js"
 
 -- The runtime is called:
 docs :: LocalBuildInfo -> FilePath
@@ -51,11 +51,11 @@ docs lbi = rtsDir lbi </> "docs.json"
 interfaces :: LocalBuildInfo -> FilePath
 interfaces lbi = rtsDir lbi </> "interfaces.data"
 
-elm :: LocalBuildInfo -> FilePath
-elm lbi = buildDir lbi </> "elm" </> "elm"
+noelm :: LocalBuildInfo -> FilePath
+noelm lbi = buildDir lbi </> "noelm" </> "noelm"
 
 document :: LocalBuildInfo -> FilePath
-document lbi = buildDir lbi </> "elm-doc" </> "elm-doc"
+document lbi = buildDir lbi </> "noelm-doc" </> "noelm-doc"
 
 -- Care!  This appears to be based on an unstable API
 -- See: http://www.haskell.org/cabal/release/cabal-latest/doc/API/Cabal/Distribution-Simple.html#2
@@ -89,11 +89,11 @@ filterExe name pd = pd {
 myPostBuild :: Args -> BuildFlags -> PackageDescription -> LocalBuildInfo -> IO ()
 myPostBuild as bfs pd lbi = do
     putStrLn "Custom build step: compiling standard libraries"
-    (elmos, elmis) <- compileLibraries lbi
+    (noelmos, noelmis) <- compileLibraries lbi
     putStrLn "Custom build step: build interfaces.data"
-    buildInterfaces lbi elmis
-    putStrLn "Custom build step: build elm-runtime.js"
-    buildRuntime lbi elmos
+    buildInterfaces lbi noelmis
+    putStrLn "Custom build step: build noelm-runtime.js"
+    buildRuntime lbi noelmos
     putStrLn "Custom build step: build docs.json"
     buildDocs lbi
     removeDirectoryRecursive (tempDir lbi)
@@ -107,51 +107,51 @@ compileLibraries lbi = do
   createDirectoryIfMissing True temp
   createDirectoryIfMissing True rts
   out_c <- canonicalizePath temp            -- temp (root folder)
-  elm_c <- canonicalizePath (elm lbi)       -- dist/build/elm/elm
-  doc_c <- canonicalizePath (document lbi)  -- dist/build/elm-doc/elm-doc
+  noelm_c <- canonicalizePath (noelm lbi)   -- dist/build/noelm/noelm
+  doc_c <- canonicalizePath (document lbi)  -- dist/build/noelm-doc/noelm-doc
   rtd_c <- canonicalizePath rts             -- data
 
   let make file = do
         -- replace 'system' call with 'runProcess' which handles args better
-        -- and allows env variable "Elm_datadir" which is used by LoadLibraries
+        -- and allows env variable "Noelm_datadir" which is used by LoadLibraries
         -- to find docs.json
         let args = [ "--only-js", "--make", "--no-prelude"
                    , "--cache-dir="++out_c, "--build-dir="++out_c, file ]
-            arg = Just [("Elm_datadir", rtd_c)]
-        handle <- runProcess elm_c args Nothing arg Nothing Nothing Nothing
+            arg = Just [("Noelm_datadir", rtd_c)]
+        handle <- runProcess noelm_c args Nothing arg Nothing Nothing Nothing
         exitCode <- waitForProcess handle
-        return ( out_c </> replaceExtension file "elmo"
-               , out_c </> replaceExtension file "elmi")
+        return ( out_c </> replaceExtension file "noelmo"
+               , out_c </> replaceExtension file "noelmi")
 
   setCurrentDirectory "libraries"
-  paths <- getFiles ".elm" "."
+  paths <- getFiles ".noelm" "."
   files <- unzip `fmap` mapM make paths
   mapM_ (\path -> rawSystem doc_c [path]) paths
   setCurrentDirectory ".."
   return files
 
 buildInterfaces :: LocalBuildInfo -> [FilePath] -> IO ()
-buildInterfaces lbi elmis = do
+buildInterfaces lbi noelmis = do
   createDirectoryIfMissing True (rtsDir lbi)
   let ifaces = interfaces lbi
   ifaceHandle <- openBinaryFile ifaces WriteMode
-  BS.hPut ifaceHandle (Binary.encode (length elmis))
+  BS.hPut ifaceHandle (Binary.encode (length noelmis))
   let append file = do
         handle <- openBinaryFile file ReadMode
         bits <- hGetContents handle
         length bits `seq` hPutStr ifaceHandle bits
         hClose handle
-  mapM_ append elmis
+  mapM_ append noelmis
   hClose ifaceHandle
 
 buildRuntime :: LocalBuildInfo -> [FilePath] -> IO ()
-buildRuntime lbi elmos = do
+buildRuntime lbi noelmos = do
   createDirectoryIfMissing True (rtsDir lbi)
   let rts' = rts lbi
   writeFile rts' "var Elm = {}; Elm.Native = {}; Elm.Native.Graphics = {}; Elm.Native.Debug = {};\n\
                  \var ElmRuntime = {}; ElmRuntime.Render = {};\n"
   mapM_ (appendTo rts') =<< getFiles ".js" "libraries"
-  mapM_ (appendTo rts') elmos
+  mapM_ (appendTo rts') noelmos
   mapM_ (appendTo rts') =<< getFiles ".js" "runtime"
 
 buildDocs :: LocalBuildInfo -> IO ()

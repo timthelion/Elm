@@ -134,7 +134,7 @@ reorder lexpr@(L s expr) =
                       [ TypeAnnotation name tipe, Def (PVar name) expr ]
                   _ -> error $ unlines 
                        [ "The impossible occurred."
-                       , "Please report an issue at <https://github.com/evancz/Elm/issues>."
+                       , "Please report an issue at <https://github.com/timthelion/Noelm/issues>."
                        , "Be very descriptive because something quite weird probably happened." ]
 
 reorderField (label, expr) =

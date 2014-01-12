@@ -2,7 +2,7 @@ module Metadata.Prelude (interfaces, add) where
 
 import qualified Data.Map as Map
 import qualified Control.Exception as E
-import qualified Paths_Elm as Path
+import qualified Paths_Noelm as Path
 import System.Directory
 import System.Exit
 import System.FilePath
@@ -39,9 +39,8 @@ safeReadDocs name =
       let _ = err :: IOError
       putStrLn $ unlines [ "Error reading types for standard library!"
                          , "    The file should be at " ++ name
-                         , "    If you are using a stable version of Elm,"
-                         , "    please report an issue at github.com/evancz/Elm"
-                         , "    and specify your versions of Elm and your OS" ]
+                         , "    Please report an issue at github.com/timthelion/Noelm"
+                         , "    and specify your versions of Noelm and your OS" ]
       exitFailure
 
 firstModuleInterface :: [(String, ModuleInterface)] ->

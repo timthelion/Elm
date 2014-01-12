@@ -32,8 +32,8 @@ data Flags = Flags
 
 defaultFlags = Flags
   { files = def &= args &= typ "FILES"
-  } &= help "Generate documentation for Elm"
-    &= summary ("Generate documentation for Elm, (c) Evan Czaplicki")
+  } &= help "Generate documentation for Noelm"
+    &= summary ("Generate documentation for Noelm, (c) Evan Czaplicki, (c) Timothy Hobbs")
 
 main = do
   flags <- cmdArgs defaultFlags

@@ -6,7 +6,7 @@ module InterfaceSerialization ( loadInterface
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Binary as Binary
 
-import qualified Elm.Internal.Version as Version
+import qualified Noelm.Internal.Version as Version
 import System.Directory (doesFileExist)
 import System.IO (hPutStrLn, stderr)
 import System.Exit (exitFailure)
@@ -41,7 +41,7 @@ interfaceDecode filePath bytes = do
 validVersion :: FilePath -> (String, ModuleInterface) ->
                 Either String (String, ModuleInterface)
 validVersion filePath (name, interface) =
-    if iVersion interface == Version.elmVersion then
+    if iVersion interface == Version.noelmVersion then
         Right (name, interface)
     else
         Left $ concat

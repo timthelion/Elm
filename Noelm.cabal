@@ -1,20 +1,16 @@
-Name:                Elm
+Name:                Noelm
 Version:             0.10.0.2
-Synopsis:            The Elm language module.
-Description:         Elm aims to make client-side web-development more pleasant.
-                     It is a statically/strongly typed, functional reactive
-                     language to HTML, CSS, and JS. This package provides a
-                     library for Elm compilation in Haskell and a compiler
-                     executable.
+Synopsis:            The Noelm language module.
+Description:         Noelm is a stable fork of the Elm programming language(apx v 0.10.0.2).  It's sole goal is to provide a stable foundation for the graphical-noelm prototype.
 
-Homepage:            http://elm-lang.org
+Homepage:            http://thobbs.cz/works/2013/graphical-elm/Intro.html
 
 License:             BSD3
 License-file:        LICENSE
 
 Author:              Evan Czaplicki
-Maintainer:          info@elm-lang.org
-Copyright:           Copyright: (c) 2011-2013 Evan Czaplicki
+Maintainer:          timothyhobbs@seznam.cz
+Copyright:           Copyright: (c) 2011-2013 Evan Czaplicki, (c) 2014 Timothy Hobbs
 
 Category:            Compiler, Language
 
@@ -22,20 +18,20 @@ Build-type:          Custom
 
 Extra-source-files:  changelog.txt
 Data-dir:            data
-Data-files:          elm-runtime.js interfaces.data docs.json
+Data-files:          noelm-runtime.js interfaces.data docs.json
 Cabal-version:       >=1.9
 
 source-repository head
   type:     git
-  location: git://github.com/evancz/Elm.git
+  location: git://github.com/timthelion/Noelm.git
 
 Library
-  exposed-modules:     Elm.Internal.Dependencies,
-                       Elm.Internal.Documentation,
-                       Elm.Internal.Name,
-                       Elm.Internal.Paths,
-                       Elm.Internal.Utils,
-                       Elm.Internal.Version
+  exposed-modules:     Noelm.Internal.Dependencies,
+                       Noelm.Internal.Documentation,
+                       Noelm.Internal.Name,
+                       Noelm.Internal.Paths,
+                       Noelm.Internal.Utils,
+                       Noelm.Internal.Version
   Hs-Source-Dirs:      compiler
   other-modules:       SourceSyntax.Declaration,
                        SourceSyntax.Expression,
@@ -87,7 +83,7 @@ Library
                        Build.Print,
                        Build.Source,
                        Build.Utils,
-                       Paths_Elm
+                       Paths_Noelm
 
   Build-depends:       aeson,
                        base >=4.2 && <5,
@@ -110,7 +106,7 @@ Library
                        union-find,
                        unordered-containers
 
-Executable elm
+Executable noelm
   Main-is:             Compiler.hs
   ghc-options:         -threaded -O2
   Hs-Source-Dirs:      compiler
@@ -164,7 +160,7 @@ Executable elm
                        Build.Print,
                        Build.Source,
                        Build.Utils,
-                       Paths_Elm
+                       Paths_Noelm
 
   Build-depends:       aeson,
                        base >=4.2 && <5,
@@ -187,7 +183,7 @@ Executable elm
                        union-find,
                        unordered-containers
 
-Executable elm-doc
+Executable noelm-doc
   Main-is:             Docs.hs
   Hs-Source-Dirs:      compiler
   other-modules:       SourceSyntax.Declaration,
@@ -224,7 +220,7 @@ Executable elm-doc
                        pretty,
                        text
 
-Test-Suite test-elm
+Test-Suite test-noelm
   Type:            exitcode-stdio-1.0
   Hs-Source-Dirs:  tests, compiler
   Main-is:         Main.hs
@@ -236,7 +232,7 @@ Test-Suite test-elm
                    SourceSyntax.PrettyPrint
   build-depends:   base,
                    directory,
-                   Elm,
+                   Noelm,
                    test-framework,
                    test-framework-hunit,
                    test-framework-quickcheck2,

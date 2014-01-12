@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module Elm.Internal.Name where
+module Noelm.Internal.Name where
 
 import Control.Applicative
 import Control.Monad.Error

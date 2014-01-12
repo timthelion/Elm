@@ -1,16 +1,14 @@
-Name:                elm-server
+Name:                noelm-server
 Version:             0.10
-Synopsis:            The Elm language server.
-Description:         This package provides a standalone, Happstack-based Elm server.
-
-Homepage:            http://elm-lang.org
+Synopsis:            The Noelm language server.
+Description:         This package provides a standalone, Happstack-based Noelm server.
 
 License:             BSD3
 License-file:        LICENSE
 
-Author:              Evan Czaplicki
-Maintainer:          info@elm-lang.org
-Copyright:           Copyright: (c) 2011-2013 Evan Czaplicki
+Author:              Evan Czaplicki & Timothy Hobbs
+Maintainer:          timothyhobbs@seznam.cz
+Copyright:           Copyright: (c) 2011-2013 Evan Czaplicki, (c) 2014 Timothy Hobbs
 
 Category:            Compiler, Language
 
@@ -21,9 +19,9 @@ Cabal-version:       >=1.8
 
 source-repository head
   type:     git
-  location: git://github.com/evancz/Elm.git
+  location: git://github.com/timthelion/Noelm.git
 
-Executable elm-server
+Executable noelm-server
   Main-is:             Server.hs
   Build-depends:       base >=4.2 && <5,
                        containers >= 0.3,
@@ -36,5 +34,5 @@ Executable elm-server
                        happstack-server,
                        deepseq,
                        filepath,
-                       Elm >= 0.10,
+                       Noelm >= 0.10,
                        process

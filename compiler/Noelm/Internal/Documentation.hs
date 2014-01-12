@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Elm.Internal.Documentation where
+module Noelm.Internal.Documentation where
 
 import Control.Applicative ((<$>),(<*>))
 import Control.Monad

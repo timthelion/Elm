@@ -99,7 +99,7 @@ jsVar = betwixt '"' '"' $ do
 isExportable tipe =
   case tipe of
     T.Lambda _ _ ->
-        Just $ "Elm's JavaScript event interface does not yet handle functions. " ++
+        Just $ "Noelm's JavaScript event interface does not yet handle functions. " ++
                "Only simple values can be imported and exported in this release."
 
     T.Data "JSArray" [t] -> isExportable t

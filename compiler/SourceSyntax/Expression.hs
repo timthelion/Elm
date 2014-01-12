@@ -40,7 +40,7 @@ tuple es = Data ("_Tuple" ++ show (length es)) es
 delist (Location.L _ (Data "::" [h,t])) = h : delist t
 delist _ = []
 
-saveEnvName = "_save_the_environment!!!"
+saveEnvName = "_save_the_environment!!!" -- ???
 
 dummyLet defs = 
      Location.none $ Let defs (Location.none $ Var saveEnvName)

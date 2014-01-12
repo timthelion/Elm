@@ -3,7 +3,7 @@
 -- can do some testing from within emacs (or whatever inferior
 -- editor you use instead).
 
-module Paths_Elm where
+module Paths_Noelm where
 
 import Data.Version
 import System.FilePath

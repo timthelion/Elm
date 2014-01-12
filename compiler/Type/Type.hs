@@ -202,7 +202,7 @@ instance (PrettyType a, PrettyType b) => PrettyType (BasicConstraint a b) where
     let prty = pretty Never in
     case constraint of
       CTrue -> P.text "True"
-      CSaveEnv -> P.text "SaveTheEnvironment!!!"
+      CSaveEnv -> P.text "SaveTheEnvironment!!!"  -- This is getting old fast - Tim
       CEqual a b -> prty a <+> P.text "=" <+> prty b
       CAnd [] -> P.text "True"
 

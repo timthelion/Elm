@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Elm.Internal.Dependencies where
+module Noelm.Internal.Dependencies where
 
 import Control.Applicative
 import Control.Monad.Error
@@ -8,9 +8,9 @@ import Data.Aeson
 import qualified Data.List as List
 import qualified Data.ByteString.Lazy as BS
 import qualified Data.HashMap.Strict as Map
-import qualified Elm.Internal.Name as N
-import qualified Elm.Internal.Version as V
-import qualified Elm.Internal.Paths as Path
+import qualified Noelm.Internal.Name as N
+import qualified Noelm.Internal.Version as V
+import qualified Noelm.Internal.Paths as Path
 
 data Deps = Deps
     { name :: N.Name
@@ -20,7 +20,7 @@ data Deps = Deps
     , license :: String
     , repo :: String
     , exposed :: [String]
-    , elmVersion :: V.Version
+    , noelmVersion :: V.Version
     , dependencies :: [(N.Name,V.Version)]
     } deriving Show
 
@@ -40,7 +40,7 @@ instance FromJSON Deps where
 
            desc <- get obj "description" "an extended description of your project \
                                          \and how to get started with it."
-           license <- get obj "license" "license information (BSD3 is recommended)"
+           license <- get obj "license" "license information (LGPLv3 is recommended)"
 
            repo <- get obj "repository" "a link to the project's GitHub repo"
            name <- case repoToName repo of
@@ -49,15 +49,15 @@ instance FromJSON Deps where
 
            exposed <- get obj "exposed-modules" "a list of modules exposed to users"
 
-           elmVersion <- get obj "elm-version" "the version of the Elm compiler you are using"
+           noelmVersion <- get obj "noelm-version" "the version of the Noelm compiler you are using"
 
            deps <- getDependencies obj
 
-           return $ Deps name version summary desc license repo exposed elmVersion deps
+           return $ Deps name version summary desc license repo exposed noelmVersion deps
 
     parseJSON _ = mzero
 
-getDependencies obj = 
+getDependencies obj =
     toDeps =<< get obj "dependencies" "a listing of your project's dependencies"
     where
       toDeps deps =
@@ -72,9 +72,7 @@ get obj field desc =
     do maybe <- obj .:? field
        case maybe of
          Just value -> return value
-         Nothing -> fail $ "Missing field " ++ show field ++ ", " ++ desc ++ ".\n" ++
-                           "    Check out an example " ++ Path.dependencyFile ++ " file here:" ++
-                           "    <https://github.com/evancz/automaton/blob/master/elm_dependencies.json>"
+         Nothing -> fail $ "Missing field " ++ show field ++ ", " ++ desc ++ ".\n"
 
 repoToName :: String -> Either String N.Name
 repoToName repo

@@ -1,13 +1,8 @@
+## 0.10.2
 
-## 0.11
-
-  * Lazy and Lazy.Stream (thanks to Max New)
-  * sortBy, sortWith (thanks to Max Goldstein)
-  * elm-repl
-  * Markdown interpolation
-  * Bitwise library
-  * Regex library
-  * Improve Transform2D library (thanks to Michael Søndergaard)
+  * Multiline field support
+  * Trampoline support
+  * Unsafe logging for debugging purposes
 
 ## 0.10
 

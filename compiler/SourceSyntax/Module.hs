@@ -12,7 +12,7 @@ import SourceSyntax.Type
 import System.FilePath (joinPath)
 import Control.Monad (liftM)
 
-import qualified Elm.Internal.Version as Version
+import qualified Noelm.Internal.Version as Version
 
 data Module tipe var =
     Module [String] Exports Imports [Declaration tipe var]
@@ -69,7 +69,7 @@ data ModuleInterface = ModuleInterface {
 
 metaToInterface metaModule =
     ModuleInterface
-    { iVersion  = Version.elmVersion
+    { iVersion  = Version.noelmVersion
     , iTypes    = types metaModule
     , iImports  = imports metaModule
     , iAdts     = datatypes metaModule

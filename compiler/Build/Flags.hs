@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 module Build.Flags where
 
-import qualified Elm.Internal.Version as Version
+import qualified Noelm.Internal.Version as Version
 import System.Console.CmdArgs
 
 data Flags = Flags
@@ -29,7 +29,7 @@ flags = Flags
   , scripts = [] &= typFile
               &= help "Load JavaScript files in generated HTML. Files will be included in the given order."
   , runtime = Nothing &= typFile
-              &= help "Specify a custom location for Elm's runtime system."
+              &= help "Specify a custom location for Noelm's runtime system."
   , cache_dir = "cache" &= typFile
                 &= help "Directory for files cached to make builds faster. Defaults to cache/ directory."
   , build_dir = "build" &= typFile
@@ -38,7 +38,7 @@ flags = Flags
               &= help "Additional source directories besides project root. Searched when using --make"
   , print_types = False
                   &= help "Print out infered types of top-level definitions."
-  } &= help "Compile Elm programs to HTML, CSS, and JavaScript."
+  } &= help "Compile Noelm programs to HTML, CSS, and JavaScript."
     &= helpArg [explicit, name "help", name "h"]
-    &= versionArg [explicit, name "version", name "v", summary (show Version.elmVersion)]
-    &= summary ("The Elm Compiler " ++ show Version.elmVersion ++ ", (c) Evan Czaplicki 2011-2013")
+    &= versionArg [explicit, name "version", name "v", summary (show Version.noelmVersion)]
+    &= summary ("The Noelm Compiler " ++ show Version.noelmVersion ++ ", (c) 2011-2013 Evan Czaplicki, (c) 2014 Timothy Hobbs")

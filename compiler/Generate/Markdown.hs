@@ -7,17 +7,17 @@ toHtml :: String -> String
 toHtml = writeHtmlString writeOptions . readMarkdown readOptions
 
 readOptions =
-    def { readerExtensions  = elmExtensions
+    def { readerExtensions  = noelmExtensions
         , readerApplyMacros = False
         }
 
 writeOptions =
-    def { writerExtensions = elmExtensions
+    def { writerExtensions = noelmExtensions
         , writerHighlight = True
         }
 
-elmExtensions :: Set.Set Extension
-elmExtensions = Set.fromList
+noelmExtensions :: Set.Set Extension
+noelmExtensions = Set.fromList
   [ Ext_raw_html
   , Ext_fenced_code_blocks
   , Ext_fenced_code_attributes

@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable, TemplateHaskell #-}
-module Elm.Internal.Version where
+module Noelm.Internal.Version where
 
 import           Control.Applicative
 import           Data.Aeson
@@ -8,11 +8,11 @@ import           Data.Char              (isDigit)
 import qualified Data.List              as List
 import           Data.Typeable
 import qualified Data.Text              as T
-import qualified Paths_Elm as This
+import qualified Paths_Noelm as This
 import qualified Data.Version as Version
 
-elmVersion :: Version
-elmVersion = V ns ""
+noelmVersion :: Version
+noelmVersion = V ns ""
     where (Version.Version ns _) = This.version
 
 -- Data representation

@@ -1,6 +1,6 @@
 {- | This module exports functions for compiling Elm to JS.
 -}
-module Elm.Internal.Utils (compile, moduleName) where
+module Noelm.Internal.Utils (compile, moduleName) where
 
 import qualified Data.List as List
 import qualified Generate.JavaScript as JS
@@ -11,7 +11,7 @@ import qualified Text.PrettyPrint as P
 import qualified Metadata.Prelude as Prelude
 import System.IO.Unsafe
 
--- |This function compiles Elm code to JavaScript. It will return either
+-- |This function compiles Noelm code to JavaScript. It will return either
 --  an error message or the compiled JS code.
 compile :: String -> Either String String
 compile source =

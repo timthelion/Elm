@@ -16,7 +16,7 @@ import qualified Metadata.Prelude as Prelude
 import qualified Build.Utils as Utils
 import qualified Build.Flags as Flag
 import qualified Build.File as File
-import qualified Elm.Internal.Paths as Path
+import qualified Noelm.Internal.Paths as Path
 
 main :: IO ()
 main = do setNumCapabilities =<< getNumProcessors
@@ -25,7 +25,7 @@ main = do setNumCapabilities =<< getNumProcessors
 compileArgs :: Flag.Flags -> IO ()
 compileArgs flags =
     case Flag.files flags of
-      [] -> putStrLn "Usage: elm [OPTIONS] [FILES]\nFor more help: elm --help"
+      [] -> putStrLn "Usage: elm [OPTIONS] [FILES]\nFor more help: noelm --help"
       fs -> mapM_ (build flags) fs
 
 build :: Flag.Flags -> FilePath -> IO ()
@@ -57,7 +57,7 @@ build flags rootFile =
     where
       appendToOutput :: BS.ByteString -> FilePath -> IO BS.ByteString
       appendToOutput js filePath = do
-        src <- BS.readFile (Utils.elmo flags filePath)
+        src <- BS.readFile (Utils.noelmo flags filePath)
         return (BS.append src js)
 
       sources js = map Html.Link (Flag.scripts flags) ++ [ Html.Source js ]

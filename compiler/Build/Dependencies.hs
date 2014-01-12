@@ -27,10 +27,10 @@ import qualified Transform.SortDefinitions as SD
 import qualified Type.Inference as TI
 import qualified Type.Constrain.Declaration as TcDecl
 import qualified Transform.Canonicalize as Canonical
-import qualified Elm.Internal.Paths as Path
-import qualified Elm.Internal.Name as N
-import qualified Elm.Internal.Version as V
-import qualified Elm.Internal.Dependencies as Deps
+import qualified Noelm.Internal.Paths as Path
+import qualified Noelm.Internal.Name as N
+import qualified Noelm.Internal.Version as V
+import qualified Noelm.Internal.Dependencies as Deps
 
 getSortedDependencies :: [FilePath] -> Module.Interfaces -> FilePath -> IO [String]
 getSortedDependencies srcDirs builtIns root =
@@ -71,7 +71,7 @@ extraDependencies =
           , show name ++ " " ++ show version ++ " but it was not found."
           , "You may need to install it with:"
           , ""
-          , "    elm-get install " ++ show name ++ " " ++ show version ]
+          , "    noelm-get install " ++ show name ++ " " ++ show version ]
 
 type Deps = (FilePath, String, [String])
 
@@ -128,4 +128,4 @@ toFilePath :: String -> FilePath
 toFilePath name = map swapDots name ++ ext
     where swapDots '.' = '/'
           swapDots  c  =  c
-          ext = if isNative name then ".js" else ".elm"
+          ext = if isNative name then ".js" else ".noelm"
