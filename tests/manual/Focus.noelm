@@ -1,0 +1,11 @@
+import Graphics.Input (hoverables, focusables, field)
+import Maybe (Just, Nothing)
+
+const c _ = c
+idOrNothing c b = if b then Just c else Nothing
+
+main = let pool = focusables Nothing
+           l = fst (field "")
+           r = focused <~ fst (field "")
+           fcs fld name = (\x -> pool.focusable (idOrNothing name) x) <~ fld
+       in above <~ (beside <~ fcs l "Left" ~ fcs r "Right") ~ (asText <~ pool.events)
