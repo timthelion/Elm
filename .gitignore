@@ -11,3 +11,6 @@ data
 */ElmFiles/*
 .DS_Store
 *~
+*.swp
+tests/manual/build/*
+tests/manual/cache/*
