@@ -237,6 +237,10 @@ Elm.Native.Graphics.Input.make = function(elm) {
                        string:JS.toString(field.value),
                        selectionStart:start,
                        selectionEnd:end };
+             if(isTextArea){
+                 state.width  = parseInt(field.style.width,10);
+                 state.height = parseInt(field.style.height,10);
+             }
              elm.notify(events.id, field.elmHandler(state));
          }
          function mousedown() {

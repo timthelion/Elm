@@ -30,7 +30,7 @@ import Basics (String)
 import Signal (Signal,lift,dropRepeats)
 import Native.Graphics.Input
 import List
-import Graphics.Element (Element)
+import Graphics.Element (Element,size)
 import Maybe (Maybe)
 import JavaScript (JSString)
 
@@ -164,15 +164,44 @@ field placeHolder =
     in  (lift (tfs.field id placeHolder) changes,
          dropRepeats (lift .string changes))
 
+{-| Represents the current state of a text field. The `string` represents the
+characters filling the text field. The `selectionStart` and `selectionEnd`
+values represent what the user has selected with their mouse or keyboard.
+The `width` represents the width in pixels, the `height` is the height of the element
+in pixels.
+
+For example:
+
+        { string="She sells sea shells", selectionStart=3, selectionEnd=0, width=40, height=60}
+
+This means the user highlighted the substring `"She"` backwards.
+-}
+type MultilineFieldState = { string:String, selectionStart:Int, selectionEnd:Int, width:Int, height:Int }
+
+
+{-| The empty multiline field state:
+
+        { string="", selectionStart=0, selectionEnd=0, width=60, height=40}
+-}
+emptyMultilineFieldState : MultilineFieldState
+emptyMultilineFieldState = { string="", selectionStart=0, selectionEnd=0, width=60, height=40}
+
 {-| Same as fields but multiline.
 -}
 fieldsMultiline : a -> { events : Signal a,
-                    field : (FieldState -> a) -> String -> FieldState -> Element }
-fieldsMultiline = Native.Graphics.Input.textareas
+                    field : (MultilineFieldState -> a) -> String -> MultilineFieldState -> Element }
+fieldsMultiline baseTransformedState =
+ let
+  nativeFieldsObject = Native.Graphics.Input.textareas baseTransformedState
+  fieldCreator stateTransform description baseState =
+   size baseState.width baseState.height (nativeFieldsObject.field stateTransform description baseState)
+ in
+ {events = nativeFieldsObject.events
+ ,field  = fieldCreator}
 
 fieldMultiline : String -> (Signal Element, Signal String)
 fieldMultiline placeHolder =
-    let tfs = fieldsMultiline emptyFieldState
+    let tfs = fieldsMultiline emptyMultilineFieldState
         changes = dropRepeats tfs.events
     in  (lift (tfs.field id placeHolder) changes,
          dropRepeats (lift .string changes))
