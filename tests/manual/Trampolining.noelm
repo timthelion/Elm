@@ -1,12 +1,36 @@
-import open Trampoline
 import open Either
+import open Trampoline
 
-fac' : Int -> Int -> Trampoline Int
-fac' n acc = case n of
-  0 -> Trampoline . Left <| acc
-  _ -> Trampoline . Right <| \() -> fac' (n - 1) (acc * n)
+f n =
+ if | n == 0 -> Trampoline . Right <| 0
+    | otherwise -> Trampoline . Left <| \_-> f (n - 1)
+
+tmap: (a -> b) -> [a] -> [b] -> Int -> Trampoline [b]
+tmap f xs r n =
+ if | n == 100 -> Trampoline . Left <| \_-> tmap f xs r 0
+    | otherwise ->
+     case xs of
+      (x::xs') -> tmap f xs' (f x::r) (n + 1)
+      [] -> Trampoline . Right <| reverse r
+
+naiveMap: (a -> b) -> [a] -> [b]
+naiveMap f xs =
+ case xs of
+  [] -> []
+  (x::xs) -> f x :: naiveMap f xs
+
+facT : Int -> Int -> Trampoline Int
+facT n acc = Trampoline <| if n <= 0
+                           then Right acc
+                           else Left <| \() -> facT (n - 1) (n * acc)
 
 fac : Int -> Int
-fac n = trampoline (fac n 1)
+fac n = trampoline <| facT n 0
 
-main = asText . fac <| 10000000
+main =
+ flow down
+  [asText <| trampoline <| f 30000
+  --,asText <| fac 1000000000000
+  ,asText <| head <| trampoline <| tmap (\n->n+1) [1..100] [] 0
+  --,asText <| head <| naiveMap (\n->n+1) [1..1000000]
+  ]

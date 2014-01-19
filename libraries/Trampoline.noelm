@@ -11,22 +11,30 @@ Support for trampolined recursion.
 import Native.Trampoline
 import open Either
 
-data Trampoline a = Trampoline (Either a (() -> Trampoline a))
+data Trampoline a = Trampoline (Either (() -> Trampoline a) a)
 
 {-|
 Trampoline a recursive function.
 
 Noelm does not have tail call optimization.  Therefore, it is necessary to trampoline recursive functions so as to not blow the stack.
 
+Continues trampolining untill it reaches Trampoline Right.
+
 Example usage:
 
-    fac' : Int -> Int -> Trampoline Int
-    fac' n acc = case n of
-      0 -> Trampoline . Left <| acc
-      _ -> Trampoline . Right <| \() -> fac' (n - 1) (acc * n)
+````
+tmap: (a -> b) -> [a] -> [b] -> Int -> Trampoline [b]
+tmap f xs r n =
+ if | n == 100 -> Trampoline . Left <| \_-> tmap f xs r 0
+    | otherwise ->
+     case xs of
+      (x::xs') -> tmap f xs' (f x::r) (n + 1)
+      [] -> Trampoline . Right <| reverse r
 
-    fac : Int -> Int
-    fac n = trampoline (fac n 1)
+main = asText <| head <| trampoline <| tmap (\n->n+1) [1..100] [] 0
+````
+
+When the `trampoline` function receives a value of `Left \_->someLazyValue` it evaluates the lazy value and inspects it.  If that value is `Left \_->someLazyValue` it recurses.  If it is `Right someFinalValue` it returns `someFinalValue`.
 
 -}
 trampoline : Trampoline a -> a

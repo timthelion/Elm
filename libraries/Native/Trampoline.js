@@ -11,9 +11,9 @@ Elm.Native.Trampoline.make = function(elm) {
         var tramp = t;
         while(true) {
             switch(tramp._0.ctor) {
-            case "Left":
-                return tramp._0._0;
             case "Right":
+                return tramp._0._0;
+            case "Left":
                 tramp = tramp._0._0({ctor: "_Tuple0"});
                 continue;
             }
@@ -22,4 +22,4 @@ Elm.Native.Trampoline.make = function(elm) {
     }
 
     return elm.Native.Trampoline.values = { trampoline: trampoline };
-}
+};
