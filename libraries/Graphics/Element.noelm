@@ -35,6 +35,12 @@ If you need more precision, you can create custom positions.
 
 @docs absolute, relative, middleAt, midTopAt, midBottomAt, midLeftAt,
       midRightAt, topLeftAt, topRightAt, bottomLeftAt, bottomRightAt
+
+# Focus
+
+Track focus with focusables from `Graphics.Input`.  Set focus with:
+
+@docs focused, unfocused
 -}
 
 import open Basics
@@ -128,10 +134,33 @@ link : String -> Element -> Element
 link href e = let p = e.props in
               { element=e.element, props={p | href <- JS.fromString href} }
 
-{-| Make an element demand input focus. -}
+{-| Make an element demand input focus.
+
+Note: It is best not to focus elements that are inside collages if you are writing a 3rd party library as they cannot be `unfocused`.
+-}
 focused : Element -> Element
 focused e = let p = e.props in
             { element=e.element, props={p | focused <- True} }
+
+{-| Unfocus an Element.  If the element is a container, recursively unfocuses it's children.
+
+Note: Will not unfocus the child Elements of a Collage.
+-}
+unfocused : Element -> Element
+unfocused e =
+ let
+  p = e.props
+  element =
+   case e.element of
+    Image _ _ _ _ -> e.element
+    Container position ce -> Container position (unfocused ce)
+    Flow direction es -> Flow direction (List.map unfocused es)
+    Spacer -> e.element
+    RawHtml -> e.element
+    Custom  -> e.element
+ in
+ {element = element
+ ,props   = {p | focused <- False}}
 
 emptyStr = JS.fromString ""
 newElement w h e =

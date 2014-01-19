@@ -1,0 +1,15 @@
+import Graphics.Input (focusables, field)
+import Maybe (Just, Nothing)
+
+const c _ = c
+idOrNothing c b = if b then Just c else Nothing
+
+main =
+ let
+  pool = focusables Nothing
+  leftField = fst (field "")
+  centerField = (unfocused . flow down . (\a->[a]) . focused) <~ fst (field "")
+  rightField = focused <~ fst (field "")
+  fcs fld name = (\x -> pool.focusable (idOrNothing name) x) <~ fld
+ in
+ above <~ ((\l c r -> flow right [l,c,r]) <~ fcs leftField "Left" ~ fcs centerField "Center" ~ fcs rightField "Right") ~ (asText <~ pool.events)

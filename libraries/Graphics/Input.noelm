@@ -24,6 +24,11 @@ two-way inputs.
 
 # Mouse Hover
 @docs hoverable, hoverables
+
+# Focus
+
+@docs focusables
+
 -}
 
 import Basics (String)
