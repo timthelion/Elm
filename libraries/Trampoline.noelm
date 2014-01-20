@@ -1,41 +1,42 @@
-module Trampoline (Trampoline, trampoline)
-       where
+module Trampoline where
 
-{-|
+{-| Trampolining loops for unbounded recursion.
+Since most javascript implementations lack tail-call elimination, deeply tail-recursive functions will result in a stack overflow.
 
-Support for trampolined recursion.
+```haskell
+fac' : Int -> Int -> Int
+fac' n acc = if n <= 0 
+             then acc
+             else fac' (n - 1) (n * acc)
 
+fac : Int -> Int
+fac n = fac' n 1
+
+-- Stack overflow
+main = asText <| fac 1000000000000
+```
+
+Trampolining allows for long-running tail-recursive loops to be run without pushing calls onto the stack:
+```haskell
+facT : Int -> Int -> Trampoline Int
+facT n acc = Trampoline <| if n <= 0 
+                           then Left acc
+                           else Right <| \() -> facT (n - 1) (n * acc)
+fac : Int -> Int
+fac n = trampoline <| facT n 0
+
+-- Doesn't stack overflow
+main = asText <| fac 1000000000000
+```
+# Trampoline
 @docs Trampoline, trampoline
-
--}
+ -}
 import Native.Trampoline
-import open Either
 
-data Trampoline a = Trampoline (Either (() -> Trampoline a) a)
+{-| A computation that might loop. A trampoline is either the resulting value or a thunk that needs to be run more. -}
+data Trampoline a = Done a
+                  | Continue (() -> Trampoline a)
 
-{-|
-Trampoline a recursive function.
-
-Noelm does not have tail call optimization.  Therefore, it is necessary to trampoline recursive functions so as to not blow the stack.
-
-Continues trampolining untill it reaches Trampoline Right.
-
-Example usage:
-
-````
-tmap: (a -> b) -> [a] -> [b] -> Int -> Trampoline [b]
-tmap f xs r n =
- if | n == 100 -> Trampoline . Left <| \_-> tmap f xs r 0
-    | otherwise ->
-     case xs of
-      (x::xs') -> tmap f xs' (f x::r) (n + 1)
-      [] -> Trampoline . Right <| reverse r
-
-main = asText <| head <| trampoline <| tmap (\n->n+1) [1..100] [] 0
-````
-
-When the `trampoline` function receives a value of `Left \_->someLazyValue` it evaluates the lazy value and inspects it.  If that value is `Left \_->someLazyValue` it recurses.  If it is `Right someFinalValue` it returns `someFinalValue`.
-
--}
+{-| Run a trampolining loop in constant space. -}
 trampoline : Trampoline a -> a
 trampoline = Native.Trampoline.trampoline
