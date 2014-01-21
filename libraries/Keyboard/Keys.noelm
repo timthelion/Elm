@@ -33,7 +33,6 @@ Note: undefined function keys have a conflict with the default keybindings of a 
 
 {-| Type alias to make it clearer what integers are supposed to represent.
 -}
-
 type KeyCode = Int
 
 type Key =
