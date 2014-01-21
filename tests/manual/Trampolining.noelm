@@ -2,16 +2,16 @@ import open Either
 import open Trampoline
 
 f n =
- if | n == 0 -> Trampoline . Right <| 0
-    | otherwise -> Trampoline . Left <| \_-> f (n - 1)
+ if | n == 0 -> Done 0
+    | otherwise -> Continue <| \_-> f (n - 1)
 
 tmap: (a -> b) -> [a] -> [b] -> Int -> Trampoline [b]
 tmap f xs r n =
- if | n == 100 -> Trampoline . Left <| \_-> tmap f xs r 0
+ if | n == 100 -> Continue <| \_-> tmap f xs r 0
     | otherwise ->
      case xs of
       (x::xs') -> tmap f xs' (f x::r) (n + 1)
-      [] -> Trampoline . Right <| reverse r
+      [] -> Done <| reverse r
 
 naiveMap: (a -> b) -> [a] -> [b]
 naiveMap f xs =
@@ -20,9 +20,9 @@ naiveMap f xs =
   (x::xs) -> f x :: naiveMap f xs
 
 facT : Int -> Int -> Trampoline Int
-facT n acc = Trampoline <| if n <= 0
-                           then Right acc
-                           else Left <| \() -> facT (n - 1) (n * acc)
+facT n acc = if n <= 0
+              then Done acc
+              else Continue <| \() -> facT (n - 1) (n * acc)
 
 fac : Int -> Int
 fac n = trampoline <| facT n 0
