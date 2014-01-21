@@ -9,9 +9,9 @@ Elm.Native.Trampoline.make = function(elm) {
     // trampoline : Trampoline a -> a
     trampoline = function(t) {
         var tramp = t;
-        while(tramp._0.ctor=="Continue"){
+        while(tramp.ctor=="Continue"){
             tramp = tramp._0({ctor: "_Tuple0"});
-        }
+        }//We've reached "Done"!
         return tramp._0;
     }
 
