@@ -2,9 +2,6 @@ module Keyboard where
 
 {-| Library for working with keyboard input.
 
-# Representing Keys
-@docs KeyCode
-
 # Directions
 @docs arrows, wasd, directions
 
