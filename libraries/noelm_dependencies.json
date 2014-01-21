@@ -33,6 +33,7 @@
     , "Text"
     , "Time"
     , "Touch"
+    , "Trampoline"
     , "Transform2D"
     , "WebSocket"
     , "Window"
